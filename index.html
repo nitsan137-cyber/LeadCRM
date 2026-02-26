@@ -5,420 +5,209 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0f0f0f">
- <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#050e1a">
 <title>Leads CRM</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fraunces:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
   :root {
-    --bg: #0f0f0f;
-    --surface: #1a1a1a;
-    --surface2: #242424;
-    --border: #2e2e2e;
-    --ink: #f0ede8;
-    --muted: #888;
-    --accent: #e8614a;
-    --accent2: #f5a623;
-    --won: #4ade80;
-    --won-bg: #14291e;
-    --process: #f5a623;
-    --process-bg: #2a1f00;
-    --closed-bg: #222;
-    --closed: #888;
-    --self: #60a5fa;
-    --self-bg: #0d1f36;
-    --sales: #d4a0f0;
-    --sales-bg: #1e0d30;
+    --bg: #050e1a;
+    --surface: #0c1b2e;
+    --surface2: #112438;
+    --border: #1a3050;
+    --ink: #e8f4f8;
+    --muted: #5a8aaa;
+    --accent: #0dcfcf;
+    --accent-dim: rgba(13,207,207,0.15);
+    --won: #60a5fa;
+    --won-bg: #0d1f3c;
+    --process: #fbbf24;
+    --process-bg: #2a1d00;
+    --closed: #f87171;
+    --closed-bg: #2d0f0f;
+    --self: #a78bfa;
+    --self-bg: #1a0f36;
+    --sales: #0dcfcf;
+    --sales-bg: #052828;
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
 
-  html, body {
-    height: 100%;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: 'DM Sans', sans-serif;
-    overflow: hidden;
-  }
+  html, body { height: 100%; background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif; overflow: hidden; }
 
-  /* ── Layout shells ── */
-  #app {
-    display: flex;
-    flex-direction: column;
-    height: 100dvh;
-    max-width: 430px;
-    margin: 0 auto;
-    position: relative;
-  }
+  #app { display: flex; flex-direction: column; height: 100dvh; max-width: 430px; margin: 0 auto; position: relative; }
 
-  /* ── Top bar ── */
+  /* Top bar */
   .topbar {
-    padding: calc(var(--safe-top) + 16px) 20px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--bg);
-    flex-shrink: 0;
-    border-bottom: 1px solid var(--border);
+    padding: calc(var(--safe-top) + 16px) 20px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg); flex-shrink: 0; border-bottom: 1px solid var(--border);
   }
-
-  .topbar-title {
-    font-family: 'Fraunces', serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
+  .topbar-title { font-family: 'Inter', sans-serif; font-size: 1.4rem; font-weight: 700; letter-spacing: -0.03em; }
+  .topbar-title em { font-style: normal; font-weight: 800; color: var(--accent); }
+  .topbar-right { display: flex; align-items: center; gap: 8px; }
+  .count-pill { background: var(--surface2); color: var(--muted); font-size: 0.72rem; font-weight: 500; padding: 4px 12px; border-radius: 20px; }
+  .sort-btn {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+    color: var(--muted); font-size: 0.75rem; font-family: 'Inter', sans-serif; font-weight: 500;
+    padding: 5px 12px; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.15s;
   }
+  .sort-btn.active { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
 
-  .topbar-title em {
-    font-style: italic;
-    font-weight: 400;
-    color: var(--accent);
-  }
-
-  .count-pill {
-    background: var(--surface2);
-    color: var(--muted);
-    font-size: 0.72rem;
-    font-weight: 500;
-    padding: 4px 12px;
-    border-radius: 20px;
-    letter-spacing: 0.04em;
-  }
-
-  /* ── Filters ── */
-  .filters-wrap {
-    padding: 12px 20px;
-    flex-shrink: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .filters-wrap::-webkit-scrollbar { display: none; }
-
-  .filters {
-    display: flex;
-    gap: 8px;
-    width: max-content;
-  }
-
+  /* Filters */
+  .filter-section { flex-shrink: 0; border-bottom: 1px solid var(--border); }
+  .filter-row { display: flex; gap: 6px; padding: 10px 16px; overflow-x: auto; scrollbar-width: none; }
+  .filter-row::-webkit-scrollbar { display: none; }
   .chip {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.72rem;
-    font-weight: 500;
-    padding: 6px 14px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    background: none;
-    color: var(--muted);
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.15s;
+    font-family: 'Inter', sans-serif; font-size: 0.72rem; font-weight: 500;
+    padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border);
+    background: none; color: var(--muted); cursor: pointer; white-space: nowrap; transition: all 0.15s; flex-shrink: 0;
   }
+  .chip.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
 
-  .chip.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: white;
-  }
+  /* Sort bar */
+  .sort-bar { display: flex; align-items: center; padding: 8px 16px; flex-shrink: 0; }
+  .sort-info { font-size: 0.72rem; color: var(--muted); }
+  .sort-info strong { color: var(--accent); font-weight: 600; }
 
-  /* ── Leads list ── */
-  .leads-scroll {
-    flex: 1;
-    overflow-y: auto;
-    padding: 8px 16px;
-    scrollbar-width: none;
-  }
+  /* Leads list */
+  .leads-scroll { flex: 1; overflow-y: auto; padding: 6px 16px 90px; scrollbar-width: none; }
   .leads-scroll::-webkit-scrollbar { display: none; }
 
   .lead-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 16px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px;
     animation: slideIn 0.2s ease;
   }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  .lead-name {
-    font-size: 1rem;
-    font-weight: 600;
-    line-height: 1.2;
-    flex: 1;
-  }
-
-  .card-actions {
-    display: flex;
-    gap: 4px;
-    flex-shrink: 0;
-  }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .lead-name { font-size: 1rem; font-weight: 600; line-height: 1.2; flex: 1; }
+  .card-actions { display: flex; gap: 4px; flex-shrink: 0; }
+  .card-date { font-size: 0.7rem; color: #2a5070; margin-top: 2px; }
 
   .icon-btn {
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-    color: var(--muted);
-    font-size: 0.9rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.15s;
+    width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--surface2); color: var(--muted); font-size: 0.9rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: all 0.15s;
   }
-
   .icon-btn:active { transform: scale(0.92); }
-  .icon-btn.edit:hover { color: var(--accent); border-color: var(--accent); }
-  .icon-btn.del:hover { color: #f87171; border-color: #f87171; }
+  .icon-btn.edit:active { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
+  .icon-btn.del:active { color: #f87171; border-color: #f87171; background: rgba(248,113,113,0.1); }
 
-  .card-badges {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
-  .badge {
-    font-size: 0.65rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 3px 10px;
-    border-radius: 20px;
-  }
-
+  .card-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+  .badge { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; }
   .badge.won { background: var(--won-bg); color: var(--won); }
   .badge.process { background: var(--process-bg); color: var(--process); }
   .badge.closed { background: var(--closed-bg); color: var(--closed); }
   .badge.self { background: var(--self-bg); color: var(--self); }
   .badge.sales { background: var(--sales-bg); color: var(--sales); }
 
-  .card-notes {
-    font-size: 0.82rem;
-    color: var(--muted);
-    line-height: 1.5;
-    border-top: 1px solid var(--border);
-    padding-top: 10px;
-  }
+  .card-notes { font-size: 0.82rem; color: var(--muted); line-height: 1.5; border-top: 1px solid var(--border); padding-top: 10px; }
 
-  .card-date {
-    font-size: 0.7rem;
-    color: #555;
-  }
-
-  .empty {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--muted);
-  }
-
-  .empty-icon {
-    font-size: 3rem;
-    margin-bottom: 12px;
-    opacity: 0.3;
-  }
-
+  .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty-icon { font-size: 3rem; margin-bottom: 12px; opacity: 0.3; }
   .empty p { font-size: 0.88rem; line-height: 1.6; }
 
-  /* ── FAB ── */
+  /* FAB */
   .fab {
-    position: absolute;
-    bottom: calc(var(--safe-bottom) + 24px);
-    right: 20px;
-    width: 58px;
-    height: 58px;
-    border-radius: 18px;
-    background: var(--accent);
-    border: none;
-    color: white;
-    font-size: 1.6rem;
-    cursor: pointer;
-    box-shadow: 0 8px 24px rgba(232,97,74,0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.15s, box-shadow 0.15s;
-    z-index: 10;
+    position: absolute; bottom: calc(var(--safe-bottom) + 24px); right: 20px;
+    width: 58px; height: 58px; border-radius: 18px; background: var(--accent); border: none;
+    color: #050e1a; font-size: 1.6rem; cursor: pointer;
+    box-shadow: 0 8px 28px rgba(13,207,207,0.35);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.15s, box-shadow 0.15s; z-index: 10;
   }
+  .fab:active { transform: scale(0.93); box-shadow: 0 4px 14px rgba(13,207,207,0.2); }
 
-  .fab:active { transform: scale(0.93); box-shadow: 0 4px 12px rgba(232,97,74,0.3); }
-
-  /* ── Drawer (bottom sheet) ── */
-  .overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 50;
-    backdrop-filter: blur(2px);
-  }
-
+  /* Overlay */
+  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 50; backdrop-filter: blur(3px); }
   .overlay.open { display: block; }
 
-  .drawer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    max-width: 430px;
-    margin: 0 auto;
-    background: var(--surface);
-    border-radius: 24px 24px 0 0;
-    padding: 0 20px calc(var(--safe-bottom) + 24px);
-    z-index: 51;
-    transform: translateY(100%);
-    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
-    max-height: 92dvh;
-    overflow-y: auto;
+  /* Drawers */
+  .drawer, .sort-sheet {
+    position: fixed; bottom: 0; left: 0; right: 0; max-width: 430px; margin: 0 auto;
+    background: var(--surface); border-radius: 24px 24px 0 0; border-top: 1px solid var(--border);
+    padding: 0 20px calc(var(--safe-bottom) + 28px);
+    transform: translateY(100%); transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+    max-height: 92dvh; overflow-y: auto;
   }
+  .drawer { z-index: 51; }
+  .sort-sheet { z-index: 52; padding-bottom: calc(var(--safe-bottom) + 20px); }
+  .drawer.open, .sort-sheet.open { transform: translateY(0); }
 
-  .drawer.open { transform: translateY(0); }
+  .drawer-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 12px auto 20px; }
+  .drawer h2 { font-family: 'Inter', sans-serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 20px; }
 
-  .drawer-handle {
-    width: 36px;
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    margin: 12px auto 20px;
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .field input, .field textarea {
+    width: 100%; font-family: 'Inter', sans-serif; font-size: 1rem;
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 12px;
+    padding: 13px 16px; color: var(--ink); outline: none; transition: border-color 0.15s; -webkit-appearance: none;
   }
+  .field input:focus, .field textarea:focus { border-color: var(--accent); }
+  .field textarea { resize: none; height: 90px; line-height: 1.5; }
 
-  .drawer h2 {
-    font-family: 'Fraunces', serif;
-    font-size: 1.3rem;
-    font-weight: 700;
-    margin-bottom: 20px;
-  }
-
-  .field {
-    margin-bottom: 16px;
-  }
-
-  .field label {
-    display: block;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
-
-  .field input,
-  .field select,
-  .field textarea {
-    width: 100%;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 1rem;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 13px 16px;
-    color: var(--ink);
-    outline: none;
-    transition: border-color 0.15s;
-    -webkit-appearance: none;
-  }
-
-  .field select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 16px center;
-    padding-right: 40px;
-  }
-
-  .field input:focus,
-  .field select:focus,
-  .field textarea:focus {
-    border-color: var(--accent);
-  }
-
-  .field textarea {
-    resize: none;
-    height: 90px;
-    line-height: 1.5;
-  }
-
-  .seg-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-
-  .seg-btn {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.88rem;
-    font-weight: 500;
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-    color: var(--muted);
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.15s;
-  }
-
-  .seg-btn.selected {
-    border-color: var(--accent);
-    background: rgba(232,97,74,0.12);
-    color: var(--accent);
-  }
-
+  .seg-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .seg-group-3 { grid-template-columns: 1fr 1fr 1fr; }
-
+  .seg-btn {
+    font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 500;
+    padding: 12px 8px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--surface2); color: var(--muted); cursor: pointer; text-align: center; transition: all 0.15s;
+  }
+  .seg-btn.selected { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
   .seg-btn.selected.won { border-color: var(--won); background: var(--won-bg); color: var(--won); }
   .seg-btn.selected.process { border-color: var(--process); background: var(--process-bg); color: var(--process); }
   .seg-btn.selected.closed { border-color: var(--closed); background: var(--closed-bg); color: var(--closed); }
 
   .btn-submit {
-    width: 100%;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 14px;
-    padding: 16px;
-    cursor: pointer;
-    margin-top: 8px;
-    transition: all 0.15s;
+    width: 100%; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 600;
+    background: var(--accent); color: #050e1a; border: none; border-radius: 14px;
+    padding: 16px; cursor: pointer; margin-top: 8px; transition: all 0.15s;
   }
-
   .btn-submit:active { transform: scale(0.97); }
+
+  /* Sort sheet */
+  .sort-sheet h3 { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .sort-option {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 15px 0; border-bottom: 1px solid var(--border);
+    cursor: pointer; font-size: 0.95rem; font-weight: 500; color: var(--ink); transition: color 0.15s;
+  }
+  .sort-option:last-child { border-bottom: none; }
+  .sort-option.active { color: var(--accent); }
+  .sort-option .check { opacity: 0; color: var(--accent); }
+  .sort-option.active .check { opacity: 1; }
 </style>
 </head>
 <body>
 <div id="app">
   <div class="topbar">
     <div class="topbar-title">My <em>Leads</em></div>
-    <div class="count-pill" id="countPill">0 leads</div>
+    <div class="topbar-right">
+      <div class="count-pill" id="countPill">0 leads</div>
+      <button class="sort-btn" id="sortBtnTop" onclick="openSortSheet()">↕ Sort</button>
+    </div>
   </div>
 
-  <div class="filters-wrap">
-    <div class="filters">
-      <button class="chip active" onclick="setFilter('all',this)">All</button>
-      <button class="chip" onclick="setFilter('Process',this)">In Process</button>
-      <button class="chip" onclick="setFilter('Won',this)">Won</button>
-      <button class="chip" onclick="setFilter('Closed',this)">Closed</button>
-      <button class="chip" onclick="setFilter('Self',this)">Self</button>
-      <button class="chip" onclick="setFilter('Sales',this)">Sales</button>
+  <div class="filter-section">
+    <div class="filter-row">
+      <button class="chip active" data-group="source" data-val="all" onclick="setFilter('source','all',this)">All Sources</button>
+      <button class="chip" data-group="source" data-val="Self" onclick="setFilter('source','Self',this)">Self</button>
+      <button class="chip" data-group="source" data-val="Sales" onclick="setFilter('source','Sales',this)">Sales</button>
     </div>
+    <div class="filter-row" style="padding-top:0">
+      <button class="chip active" data-group="status" data-val="all" onclick="setFilter('status','all',this)">All Statuses</button>
+      <button class="chip" data-group="status" data-val="Process" onclick="setFilter('status','Process',this)">In Process</button>
+      <button class="chip" data-group="status" data-val="Won" onclick="setFilter('status','Won',this)">Won</button>
+      <button class="chip" data-group="status" data-val="Closed" onclick="setFilter('status','Closed',this)">Closed</button>
+    </div>
+  </div>
+
+  <div class="sort-bar">
+    <div class="sort-info" id="sortInfo">Sorted by <strong>Newest first</strong></div>
   </div>
 
   <div class="leads-scroll" id="leadsList"></div>
@@ -426,19 +215,15 @@
   <button class="fab" onclick="openDrawer()">+</button>
 </div>
 
-<!-- Overlay -->
-<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+<div class="overlay" id="overlay" onclick="closeAll()"></div>
 
-<!-- Bottom Sheet Drawer -->
 <div class="drawer" id="drawer">
   <div class="drawer-handle"></div>
   <h2 id="drawerTitle">New Lead</h2>
-
   <div class="field">
     <label>Name</label>
     <input type="text" id="fName" placeholder="Contact name…" autocomplete="off">
   </div>
-
   <div class="field">
     <label>Source</label>
     <div class="seg-group" id="sourceGroup">
@@ -446,7 +231,6 @@
       <button class="seg-btn" data-val="Sales" onclick="selectSeg('sourceGroup',this)">Sales</button>
     </div>
   </div>
-
   <div class="field">
     <label>Status</label>
     <div class="seg-group seg-group-3" id="statusGroup">
@@ -455,33 +239,35 @@
       <button class="seg-btn" data-val="Closed" onclick="selectSeg('statusGroup',this)">Closed</button>
     </div>
   </div>
-
   <div class="field">
     <label>Notes</label>
     <textarea id="fNotes" placeholder="Add a note…"></textarea>
   </div>
-
   <button class="btn-submit" id="submitBtn" onclick="submitForm()">Add Lead</button>
+</div>
+
+<div class="sort-sheet" id="sortSheet">
+  <div class="drawer-handle"></div>
+  <h3>Sort by</h3>
+  <div class="sort-option active" data-sort="newest" onclick="setSort('newest',this)"><span>Newest first</span><span class="check">✓</span></div>
+  <div class="sort-option" data-sort="oldest" onclick="setSort('oldest',this)"><span>Oldest first</span><span class="check">✓</span></div>
+  <div class="sort-option" data-sort="name_az" onclick="setSort('name_az',this)"><span>Name A → Z</span><span class="check">✓</span></div>
+  <div class="sort-option" data-sort="name_za" onclick="setSort('name_za',this)"><span>Name Z → A</span><span class="check">✓</span></div>
+  <div class="sort-option" data-sort="status" onclick="setSort('status',this)"><span>By Status</span><span class="check">✓</span></div>
+  <div class="sort-option" data-sort="source" onclick="setSort('source',this)"><span>By Source</span><span class="check">✓</span></div>
 </div>
 
 <script>
   let leads = JSON.parse(localStorage.getItem('crm_leads') || '[]');
-  let filter = 'all';
-  let editingId = null;
+  let filterSource = 'all', filterStatus = 'all', sortMode = 'newest';
+  let editingId = null, sortSheetOpen = false, drawerOpen = false;
 
   function save() { localStorage.setItem('crm_leads', JSON.stringify(leads)); }
 
-  // ── Segmented controls ──
   function selectSeg(groupId, btn) {
-    const group = document.getElementById(groupId);
-    group.querySelectorAll('.seg-btn').forEach(b => {
-      b.classList.remove('selected','won','process','closed');
-    });
+    document.querySelectorAll(`#${groupId} .seg-btn`).forEach(b => b.classList.remove('selected','won','process','closed'));
     btn.classList.add('selected');
-    if (groupId === 'statusGroup') {
-      const v = btn.dataset.val.toLowerCase();
-      btn.classList.add(v);
-    }
+    if (groupId === 'statusGroup') btn.classList.add(btn.dataset.val.toLowerCase());
   }
 
   function getSegVal(groupId) {
@@ -490,17 +276,42 @@
   }
 
   function setSegVal(groupId, val) {
-    const group = document.getElementById(groupId);
-    group.querySelectorAll('.seg-btn').forEach(b => {
+    document.querySelectorAll(`#${groupId} .seg-btn`).forEach(b => {
       b.classList.remove('selected','won','process','closed');
-      if (b.dataset.val === val) {
-        b.classList.add('selected');
-        if (groupId === 'statusGroup') b.classList.add(val.toLowerCase());
-      }
+      if (b.dataset.val === val) { b.classList.add('selected'); if (groupId === 'statusGroup') b.classList.add(val.toLowerCase()); }
     });
   }
 
-  // ── Drawer ──
+  function setFilter(group, val, btn) {
+    if (group === 'source') filterSource = val; else filterStatus = val;
+    document.querySelectorAll(`[data-group="${group}"]`).forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  }
+
+  const sortLabels = { newest:'Newest first', oldest:'Oldest first', name_az:'Name A → Z', name_za:'Name Z → A', status:'By Status', source:'By Source' };
+
+  function setSort(mode, el) {
+    sortMode = mode;
+    document.querySelectorAll('.sort-option').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('sortInfo').innerHTML = `Sorted by <strong>${sortLabels[mode]}</strong>`;
+    document.getElementById('sortBtnTop').classList.add('active');
+    closeSortSheet(); render();
+  }
+
+  function openSortSheet() {
+    document.getElementById('overlay').classList.add('open');
+    document.getElementById('sortSheet').classList.add('open');
+    sortSheetOpen = true;
+  }
+
+  function closeSortSheet() {
+    document.getElementById('sortSheet').classList.remove('open');
+    if (!drawerOpen) document.getElementById('overlay').classList.remove('open');
+    sortSheetOpen = false;
+  }
+
   function openDrawer(lead = null) {
     editingId = lead ? lead.id : null;
     document.getElementById('drawerTitle').textContent = lead ? 'Edit Lead' : 'New Lead';
@@ -511,76 +322,68 @@
     setSegVal('statusGroup', lead ? lead.status : 'Process');
     document.getElementById('overlay').classList.add('open');
     document.getElementById('drawer').classList.add('open');
+    drawerOpen = true;
     setTimeout(() => document.getElementById('fName').focus(), 350);
   }
 
   function closeDrawer() {
-    document.getElementById('overlay').classList.remove('open');
     document.getElementById('drawer').classList.remove('open');
-    editingId = null;
+    if (!sortSheetOpen) document.getElementById('overlay').classList.remove('open');
+    drawerOpen = false; editingId = null;
+  }
+
+  function closeAll() {
+    closeDrawer(); closeSortSheet();
+    document.getElementById('overlay').classList.remove('open');
   }
 
   function submitForm() {
     const name = document.getElementById('fName').value.trim();
     if (!name) { document.getElementById('fName').focus(); return; }
-    const source = getSegVal('sourceGroup');
-    const status = getSegVal('statusGroup');
+    const source = getSegVal('sourceGroup'), status = getSegVal('statusGroup');
     const notes = document.getElementById('fNotes').value.trim();
-
     if (editingId) {
-      const lead = leads.find(l => l.id === editingId);
-      Object.assign(lead, { name, source, status, notes });
+      Object.assign(leads.find(l => l.id === editingId), { name, source, status, notes });
     } else {
       leads.unshift({ id: Date.now(), name, source, status, notes, date: new Date().toLocaleDateString('en-GB') });
     }
-
-    save();
-    render();
-    closeDrawer();
+    save(); render(); closeDrawer();
   }
 
-  function deleteLead(id) {
-    leads = leads.filter(l => l.id !== id);
-    save();
-    render();
+  function deleteLead(id) { leads = leads.filter(l => l.id !== id); save(); render(); }
+
+  const statusOrder = { Process:0, Won:1, Closed:2 };
+
+  function getSorted(arr) {
+    const c = [...arr];
+    if (sortMode === 'newest') return c.sort((a,b) => b.id - a.id);
+    if (sortMode === 'oldest') return c.sort((a,b) => a.id - b.id);
+    if (sortMode === 'name_az') return c.sort((a,b) => a.name.localeCompare(b.name));
+    if (sortMode === 'name_za') return c.sort((a,b) => b.name.localeCompare(a.name));
+    if (sortMode === 'status') return c.sort((a,b) => (statusOrder[a.status]??9)-(statusOrder[b.status]??9));
+    if (sortMode === 'source') return c.sort((a,b) => a.source.localeCompare(b.source));
+    return c;
   }
 
-  // ── Filter ──
-  function setFilter(f, btn) {
-    filter = f;
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-    btn.classList.add('active');
-    render();
-  }
-
-  // ── Render ──
   function statusLabel(s) { return s === 'Process' ? 'In Process' : s; }
 
   function render() {
     const filtered = leads.filter(l =>
-      filter === 'all' || l.status === filter || l.source === filter
+      (filterSource === 'all' || l.source === filterSource) &&
+      (filterStatus === 'all' || l.status === filterStatus)
     );
-
+    const sorted = getSorted(filtered);
     const c = leads.length;
     document.getElementById('countPill').textContent = `${c} lead${c !== 1 ? 's' : ''}`;
-
     const list = document.getElementById('leadsList');
-
-    if (filtered.length === 0) {
-      list.innerHTML = `<div class="empty">
-        <div class="empty-icon">📋</div>
-        <p>${filter !== 'all' ? 'No leads match this filter.' : 'Tap <strong>+</strong> to add your first lead.'}</p>
-      </div>`;
+    if (sorted.length === 0) {
+      list.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><p>${(filterSource!=='all'||filterStatus!=='all') ? 'No leads match these filters.' : 'Tap <strong>+</strong> to add your first lead.'}</p></div>`;
       return;
     }
-
-    list.innerHTML = filtered.map(l => `
+    list.innerHTML = sorted.map(l => `
       <div class="lead-card">
         <div class="card-top">
-          <div>
-            <div class="lead-name">${esc(l.name)}</div>
-            <div class="card-date">${l.date}</div>
-          </div>
+          <div><div class="lead-name">${esc(l.name)}</div><div class="card-date">${l.date}</div></div>
           <div class="card-actions">
             <button class="icon-btn edit" onclick='openDrawer(${JSON.stringify(l)})'>✎</button>
             <button class="icon-btn del" onclick="deleteLead(${l.id})">✕</button>
@@ -591,13 +394,10 @@
           <span class="badge ${l.status.toLowerCase()}">${statusLabel(l.status)}</span>
         </div>
         ${l.notes ? `<div class="card-notes">${esc(l.notes)}</div>` : ''}
-      </div>
-    `).join('');
+      </div>`).join('');
   }
 
-  function esc(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
   render();
 </script>
